@@ -1,9 +1,9 @@
 <template>
-  <RouterView />
+  <h1>This is Carts page.</h1>
 </template>
 
 <script>
 export default {};
 </script>
 
-<style lang="scss"></style>
+<style scoped></style>
