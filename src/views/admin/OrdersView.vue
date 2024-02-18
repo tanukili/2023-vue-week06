@@ -1,5 +1,5 @@
 <template>
-  <h1>This is Carts page.</h1>
+  <h1>This is Admin Orders page.</h1>
 </template>
 
 <script>

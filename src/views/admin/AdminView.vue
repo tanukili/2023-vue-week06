@@ -8,3 +8,36 @@
     <RouterView></RouterView>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      url: '',
+    };
+  },
+  methods: {
+    checkLogin() {
+      this.axios
+        .post(`${this.url}/api/user/check`)
+        .then(() => {
+          alert('驗證成功');
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+          this.$router.push({ name: 'home' });
+        });
+    },
+  },
+  mounted() {
+    this.url = import.meta.env.VITE_APP_API_URL;
+    const token = document.cookie.replace(
+      /(?:(?:^|.*;\s*)adminToken\s*=\s*([^;]*).*$)|^.*$/,
+      '$1',
+    );
+    // 預設帶入驗證資訊
+    this.axios.defaults.headers.common.Authorization = token;
+    this.checkLogin(token);
+  },
+};
+</script>

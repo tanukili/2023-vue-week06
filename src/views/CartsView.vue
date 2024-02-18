@@ -1,9 +1,18 @@
 <template>
-  <h1>This is Carts page.</h1>
+    <CartsList></CartsList>
+    <OrderForm></OrderForm>
 </template>
 
 <script>
-export default {};
+import OrderForm from '../components/OrderForm.vue';
+import CartsList from '../components/CartsList.vue';
+
+export default {
+  components: {
+    OrderForm,
+    CartsList,
+  },
+};
 </script>
 
 <style scoped></style>

@@ -1,0 +1,275 @@
+<template>
+  <div class="modal fade" id="productModal" ref="productModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-dark">
+          <h3 class="modal-title fs-5 text-white">
+          {{ modalTemp.id ? '編輯產品' : '新增產品' }}
+          </h3>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form class="row">
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label for="mainImg" class="form-label">主要圖片</label>
+                  <input
+                    type="text"
+                    id="mainImg"
+                    class="form-control"
+                    placeholder="請輸入圖片連結"
+                    v-model.lazy="modalTemp.imageUrl"
+                  />
+                  <div class="input-group my-2">
+                      <input
+                        type="file"
+                        ref="fileValue"
+                        class="form-control"
+                        @change="uploadImage(null, $event)">
+                    </div>
+                  <img
+                    v-show="modalTemp.imageUrl"
+                    :src="modalTemp.imageUrl"
+                    alt="主要圖片"
+                    class="img-fluid mt-2"
+                  />
+                </div>
+                <h4 class="fs-3 mb-3">多圖新增</h4>
+                <template v-if="modalTemp.imagesUrl">
+                  <div
+                    class="mb-2"
+                    v-for="(img, index) in modalTemp.imagesUrl"
+                    :key="index"
+                  >
+                    <label for="otherImg01" class="form-label">圖片網址</label>
+                    <input
+                      type="text"
+                      id="otherImg01"
+                      class="form-control"
+                      placeholder="請輸入圖片連結"
+                      v-model="modalTemp.imagesUrl[index]"
+                    />
+                    <div class="input-group my-2">
+                      <input type="file" class="form-control"  @change="uploadImage(index, $event)">
+                    </div>
+                    <img
+                      v-show="img"
+                      :src="img"
+                      :alt="'新增圖片'+ (index + 1)"
+                      class="img-fluid mt-2"
+                    />
+                  </div>
+                </template>
+                <button
+                  v-show="!modalTemp.imagesUrl.length || modalTemp.imagesUrl.at(-1)"
+                  type="button"
+                  class="btn btn-outline-primary btn-sm w-100"
+                  @click="addImage"
+                >
+                  新增圖片
+                </button>
+                <button
+                    v-show="modalTemp.imagesUrl.length && !modalTemp.imagesUrl.at(-1)"
+                    type="button"
+                    class="btn btn-outline-danger btn-sm w-100 mt-4"
+                    @click="delImage"
+                  >
+                  刪除圖片
+                </button>
+              </div>
+              <div class="col-sm-8">
+                <div class="row">
+                  <div class="col-md mb-3">
+                    <label for="title" class="form-label">標題</label>
+                    <input
+                      type="text"
+                      id="title"
+                      class="form-control"
+                      placeholder="請輸入標題"
+                      v-model="modalTemp.title"
+                    />
+                  </div>
+                  <div class="col-md mb-3">
+                    <label for="recommendation" class="form-label">熱門度</label>
+                    <select
+                      class="form-select form-select-lg mb-3"
+                      id="recommendation"
+                      v-model="modalTemp.recommendation">
+                      <option value="0" disabled hidden>請選擇熱門度</option>
+                      <option value="1">偏低</option>
+                      <option value="2">普通</option>
+                      <option value="3">銷售前十</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md mb-3">
+                    <label for="category" class="form-label">分類</label>
+                    <input
+                      type="text"
+                      id="category"
+                      class="form-control"
+                      placeholder="請輸入分類"
+                      v-model="modalTemp.category"
+                    />
+                  </div>
+                  <div class="col-md mb-3">
+                    <label for="unit" class="form-label">單位</label>
+                    <input
+                      type="text"
+                      id="unit"
+                      class="form-control"
+                      placeholder="請輸入單位"
+                      v-model="modalTemp.unit"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md mb-3">
+                    <label for="origin_price" class="form-label">原價</label>
+                    <input
+                      type="number"
+                      id="origin_price"
+                      class="form-control"
+                      placeholder="請輸入原價"
+                      v-model.number="modalTemp.origin_price"
+                      min="0"
+                    />
+                  </div>
+                  <div class="col-md mb-3">
+                    <label for="price" class="form-label">售價</label>
+                    <input
+                      type="number"
+                      id="price"
+                      class="form-control"
+                      placeholder="請輸入售價"
+                      v-model.number="modalTemp.price"
+                      min="0"
+                    />
+                  </div>
+                </div>
+                <hr />
+                <div class="mb-3">
+                  <label for="description" class="form-label">產品描述</label>
+                  <textarea
+                    id="description"
+                    class="form-control"
+                    placeholder="請輸入產品描述"
+                    v-model="modalTemp.description"
+                  ></textarea>
+                </div>
+                <div class="mb-3">
+                  <label for="content" class="form-label">說明內容</label>
+                  <textarea
+                    id="content"
+                    class="form-control"
+                    placeholder="請輸入說明內容"
+                    v-model="modalTemp.content"
+                  ></textarea>
+                </div>
+                <div class="form-check">
+                  <input
+                    type="checkbox"
+                    id="is_enabled"
+                    class="form-check-input"
+                    v-model="modalTemp.is_enabled"
+                    true-value="1"
+                    false-value="0"
+                  />
+                  <label for="is_enabled" class="form-check-label">是否啟用</label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+            取消
+          </button>
+          <button type="button" class="btn btn-primary" @click="editProduct(modalTemp.id)">
+            確認
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import * as bootstrap from 'bootstrap';
+
+export default {
+  props: ['temp', 'getProducts'],
+  data() {
+    return {
+      url: '',
+      path: '',
+      formData: {},
+      modalTemp: {
+        imagesUrl: [],
+      },
+      productModal: null,
+    };
+  },
+  methods: {
+    addImage() {
+      this.modalTemp.imagesUrl.push('');
+    },
+    delImage() {
+      this.modalTemp.imagesUrl.pop();
+    },
+    uploadImage(index, event) {
+      const file = event.target.files[0];
+      const formData = new FormData();
+      formData.append('file-to-upload', file);
+      this.axios
+        .post(`${this.url}/api/${this.path}/admin/upload`, formData)
+        .then((res) => {
+          if (index !== null) {
+            this.modalTemp.imagesUrl[index] = res.data.imageUrl;
+          } else {
+            this.modalTemp.imageUrl = res.data.imageUrl;
+          }
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+    editProduct(id = '') {
+      let method = 'post';
+      let apiPath = `${this.url}/api/${this.path}/admin/product`;
+      if (id) {
+        method = 'put';
+        apiPath = `${apiPath}/${id}`;
+      }
+      const obj = { data: { ...this.temp } };
+      this.axios[method](`${apiPath}`, obj)
+        .then((res) => {
+          alert(res.data.message);
+          this.productModal.hide();
+          console.log(this.getProducts);
+          this.getProducts();
+        })
+        .catch((err) => {
+          alert(err.response.data.message);
+        });
+    },
+  },
+  mounted() {
+    this.url = import.meta.env.VITE_APP_API_URL;
+    this.path = import.meta.env.VITE_APP_API_NAME;
+
+    this.modalTemp = this.temp;
+
+    this.productModal = new bootstrap.Modal(this.$refs.productModal);
+    this.$refs.productModal.addEventListener('hidden.bs.modal', () => {
+      this.modalTemp = this.$options.data().modalTemp;
+      this.$refs.fileValue.value = null;
+      this.$emit('temp', this.modalTemp);
+    });
+    this.$refs.productModal.addEventListener('show.bs.modal', () => {
+      this.modalTemp = this.temp;
+    });
+  },
+};
+</script>
