@@ -247,7 +247,6 @@ export default {
         .then((res) => {
           alert(res.data.message);
           this.productModal.hide();
-          console.log(this.getProducts);
           this.getProducts();
         })
         .catch((err) => {

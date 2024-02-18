@@ -99,9 +99,6 @@ export default {
         id: '',
         recommendation: 0,
       },
-      // productModal: '',
-      // delModal: '',
-      // fileInput: null,
       products: [],
       pagination: {},
     };
@@ -118,58 +115,15 @@ export default {
           alert(err.response.data.message);
         });
     },
-    // 新增 / 編輯
-    // editProduct(id = '') {
-    //   let method = 'post';
-    //   let apiPath = `${this.url}/api/${this.path}/admin/product`;
-    //   if (id) {
-    //     method = 'put';
-    //     apiPath = `${apiPath}/${id}`;
-    //   }
-    //   const obj = { data: { ...this.temp } };
-
-    //   this.axios[method](`${apiPath}`, obj)
-    //     .then((res) => {
-    //       alert(res.data.message);
-    //       this.resetModal('productModal');
-    //       this.getProducts();
-    //     })
-    //     .catch((err) => {
-    //       alert(err.response.data.message);
-    //     });
-    // },
     getSpecificProduct(id) {
       const product = this.products.find((ele) => ele.id === id);
       Object.keys(product).forEach((ele) => {
         this.temp[ele] = product[ele];
       });
     },
-    delProduct(id) {
-      this.axios
-        .delete(`${this.url}/api/${this.path}/admin/product/${id}`)
-        .then((res) => {
-          alert(res.data.message);
-          // this.resetModal('delModal');
-          this.getProducts();
-        })
-        .catch((err) => {
-          alert(err.response.data.message);
-        });
-    },
     resetProductModal(emitTemp) {
       this.temp = emitTemp;
     },
-    // resetModal(name = '') {
-    //   if (name) {
-    //     this[name].hide();
-    //   }
-    //   // 將資料初始化：參考文章 - Vue.js 重設或還原 data 初始值的小技巧
-    //   this.temp = this.$options.data().temp;
-    //   this.fileInput.value = null;
-    // },
-    // getFileValue(dom) {
-    //   this.fileInput = dom;
-    // },
   },
   mounted() {
     this.url = import.meta.env.VITE_APP_API_URL;
@@ -181,18 +135,6 @@ export default {
     // 預設帶入驗證資訊
     this.axios.defaults.headers.common.Authorization = token;
     this.getProducts();
-    console.log(this.$refs);
-
-    // 取得 modal 物件（為了手動操作）
-    // this.productModal = new bootstrap.Modal(document.getElementById('productModal'));
-    // this.delModal = new bootstrap.Modal(document.getElementById('delModal'));
-    // // 監聽 modal 隱藏事件
-    // this.productModal.element.addEventListener('hidden.bs.modal', () => {
-    //   this.resetModal();
-    // });
-    // this.delModal.element.addEventListener('hidden.bs.modal', () => {
-    //   this.resetModal();
-    // });
   },
 };
 </script>

@@ -4,7 +4,7 @@
     <RouterLink to="/home">返回前台</RouterLink> |
     <RouterLink to="/admin/products">後台產品列表</RouterLink> |
     <RouterLink to="/admin/orders">後台訂單</RouterLink> |
-    <a href="#">後台登出</a>
+    <a href="#" @click.prevent="signOut">後台登出</a>
     <RouterView></RouterView>
   </div>
 </template>
@@ -27,6 +27,11 @@ export default {
           alert(err.response.data.message);
           this.$router.push({ name: 'home' });
         });
+    },
+    signOut() {
+      document.cookie = 'adminToken=; expires=;';
+      alert('管理者登出');
+      this.$router.push({ name: 'home' });
     },
   },
   mounted() {
